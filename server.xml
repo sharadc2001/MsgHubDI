@@ -1,0 +1,43 @@
+<server description="new server">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>webProfile-7.0</feature>
+		<feature>adminCenter-1.0</feature>
+        <feature>localConnector-1.0</feature>
+		<feature>appSecurity-2.0</feature>
+		<feature>apiDiscovery-1.0</feature>
+	</featureManager>
+
+<library id="kafkaLoginLib">
+  <fileset dir="${shared.resource.dir}/kafkalibs" includes="messagehub.login-*.jar"/>
+</library>
+    <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+    <httpEndpoint host="*" httpPort="9080" httpsPort="9443" id="defaultHttpEndpoint"/>
+    
+	<!-- Define an Administrator and non-Administrator -->
+   
+
+   <!-- Assign 'admin' to Administrator -->
+
+    <!-- Automatically expand WAR files and EAR files -->
+	<basicRegistry id="basic" realm="ibm/api">
+      <user name="admin" password="adminpwd"/>
+      <user name="nonadmin" password="nonadminpwd"/>
+   </basicRegistry>
+    <administrator-role>
+      <user>admin</user>
+	  <user>nonadmin</user>
+   </administrator-role>
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+    <applicationManager autoExpand="true"/>
+    <applicationMonitor updateTrigger="mbean"/>
+    <jaasLoginModule className="com.ibm.messagehub.login.MessageHubLoginModule" id="KafkaClient"
+                     libraryRef="kafkaLoginLib">
+    	<options password="ehEWN0UFoNWuXDCsjkVKBmGqYQn1MUKK" serviceName="kafka" username="4vyQ0exjKidRtclz"/>
+    </jaasLoginModule>
+    <jaasLoginContextEntry id="KafkaClient" loginModuleRef="KafkaClient" name="KafkaClient"/>
+    <logging consoleLogLevel="INFO"/>
+
+    <webApplication id="DataInjestAppWeb" location="DataInjestAppWeb.war" name="DataInjestAppWeb"/>
+</server>
